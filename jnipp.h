@@ -179,6 +179,13 @@ namespace jni
         \param env A JNI environment handle.
      */
     void init(JNIEnv* env);
+    /**
+        Initialises the Java Native Interface with the given JavaVM handle,
+        which may be accessible. This (or the other overload) only needs to be
+        done once per process - further calls are no-ops.
+        \param vm A JNI VM handle.
+     */
+    void init(JavaVM* vm);
 
     /**
         Object corresponds with a `java.lang.Object` instance. With an Object,
@@ -401,6 +408,11 @@ namespace jni
     class Class : protected Object
     {
     public:
+        /**
+            Creates a null class reference.
+         */
+        Class() : Object() {}
+
         /**
             Obtains a class reference to the Java class with the given qualified
             name.
