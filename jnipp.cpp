@@ -612,6 +612,13 @@ namespace jni
         return Class(getClass(), Temporary).getField(name, signature);
     }
 
+    jobject Object::makeLocalReference() const 
+    {
+        if (isNull())
+            return nullptr;
+        return env()->NewLocalRef(_handle);
+    }
+
     /*
         Class Implementation
      */
