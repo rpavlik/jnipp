@@ -282,6 +282,8 @@ namespace jni
             env->DeleteLocalRef(ref);
     }
 
+    Object::Object(Weak const& weak) : Object(static_cast<jobject>(weak.getHandle()), 0) {}
+
     Object::~Object() noexcept
     {
         JNIEnv* env = jni::env();
@@ -610,6 +612,20 @@ namespace jni
     field_t Object::getField(const char* name, const char* signature) const
     {
         return Class(getClass(), Temporary).getField(name, signature);
+    }
+
+    Weak::Weak(jobject ref) : _handle(nullptr)
+    {
+        _handle = env()->NewWeakGlobalRef(ref);
+    }
+
+    Weak::~Weak()
+    {
+        if (_handle != nullptr)
+        {
+            env()->DeleteWeakGlobalRef(_handle);
+            _handle = nullptr;
+        }
     }
 
     /*

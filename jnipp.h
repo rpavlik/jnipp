@@ -26,6 +26,7 @@ namespace jni
     typedef _jobject* jobject;
     typedef _jclass* jclass;
     typedef _jarray* jarray;
+    typedef _jobject* jweak;
 
     /**
         You can save a method via its handle using Class::getMethod() if it is
@@ -68,6 +69,7 @@ namespace jni
 
     // Foward Declarations
     class Object;
+    class Weak;
 
     /**
         This namespace is for messy implementation details only. It is not a part
@@ -231,6 +233,13 @@ namespace jni
             \param scopeFlags Bitmask of ScopeFlags values.
          */
         Object(jobject ref, int scopeFlags = 0);
+
+        /**
+            Creates an Object from a global weak reference, if still valid.
+            This will be null if it is not still valid.
+            \param weak The weak JNI reference.
+         */
+        Object(Weak const& weak);
 
         /**
             Destructor. Releases this reference on the Java Object so it can be
@@ -404,6 +413,42 @@ namespace jni
         jobject _handle;
         mutable jclass _class;
         bool _isGlobal;
+    };
+
+    /**
+        Encapsulates a weak global reference.
+     */
+    class Weak
+    {
+    public:
+        /**
+            Create a null weak reference.
+         */
+        Weak() = default;
+
+        /**
+            Create a weak global reference from a JNI ref.
+         */
+        Weak(jobject ref);
+
+        /**
+            Create a weak global reference from an Object.
+         */
+        Weak(jni::Object const& obj) : Weak(obj.getHandle()) {}
+
+        /**
+            Destroy the weak global ref.
+         */
+        ~Weak();
+
+        /**
+            Gets the underlying JNI jweak handle.
+            \return The JNI handle.
+         */
+        jweak getHandle() const noexcept { return _handle; }
+
+    private:
+        jweak _handle;
     };
 
     /**
