@@ -9,6 +9,8 @@
 // Forward Declarations
 struct JNIEnv_;
 struct _JNIEnv;
+struct JavaVM_;
+struct _JavaVM;
 struct _jmethodID;
 struct _jfieldID;
 class  _jobject;
@@ -20,9 +22,12 @@ namespace jni
     // JNI Base Types
 #ifdef __ANDROID__
     typedef _JNIEnv     JNIEnv;
+    typedef _JavaVM JavaVM;
 #else
     typedef JNIEnv_     JNIEnv;
+    typedef JavaVM_ JavaVM;
 #endif
+
     typedef _jobject* jobject;
     typedef _jclass* jclass;
     typedef _jarray* jarray;
